@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Editar tarea{% endblock %}
+{% block content %}
+<section class="edit-page">
+  <a class="back-link" href="{{ url_for('tasks') }}">← Volver a mis tareas</a>
+  <div class="edit-card">
+    <div class="eyebrow"><span class="eyebrow-line"></span> UN PEQUEÑO AJUSTE</div>
+    <h1>Edita tu <span>tarea.</span></h1>
+    <p class="edit-lead">Las ideas también pueden cambiar de forma.</p>
+    <form method="post" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label for="title">Título</label>
+      <input id="title" name="title" type="text" maxlength="120" value="{{ request.form.get('title', task.title) }}" required autofocus>
+      <label for="description">Descripción <span class="optional">(opcional)</span></label>
+      <textarea id="description" name="description" rows="5" maxlength="1000">{{ request.form.get('description', task.description) }}</textarea>
+      <div class="edit-actions"><a class="button button-quiet" href="{{ url_for('tasks') }}">Cancelar</a><button class="button button-primary" type="submit">Guardar cambios <span aria-hidden="true">↗</span></button></div>
+    </form>
+  </div>
+</section>
+{% endblock %}

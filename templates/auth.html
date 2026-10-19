@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ "Crear cuenta" if mode == "register" else "Iniciar sesión" }}{% endblock %}
+{% block content %}
+<section class="auth-layout">
+  <div class="auth-copy">
+    <div class="eyebrow"><span class="eyebrow-line"></span> TU ESPACIO, A TU RITMO</div>
+    <h1>{% if mode == "register" %}Haz espacio<br>para lo <span>importante.</span>{% else %}Un día a la vez.<br><span>Lo tienes.</span>{% endif %}</h1>
+    <p>Una lista sencilla para ordenar tus ideas, avanzar con calma y celebrar cada pequeño logro.</p>
+    <div class="scribble" aria-hidden="true">✳</div>
+  </div>
+  <div class="auth-card">
+    <div class="card-heading">
+      <div class="mini-icon">✳</div>
+      <h2>{{ "Empieza por aquí" if mode == "register" else "Qué bueno verte" }}</h2>
+      <p>{{ "Crea tu cuenta en un momento." if mode == "register" else "Entra y sigue donde lo dejaste." }}</p>
+    </div>
+    <form method="post" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label for="username">Nombre de usuario</label>
+      <input id="username" name="username" type="text" autocomplete="username" minlength="3" maxlength="30" placeholder="Tu nombre" value="{{ request.form.get('username', '') }}" required autofocus>
+      <label for="password">Contraseña</label>
+      <input id="password" name="password" type="password" autocomplete="{{ 'new-password' if mode == 'register' else 'current-password' }}" minlength="{{ 8 if mode == 'register' else 1 }}" placeholder="{{ 'Al menos 8 caracteres' if mode == 'register' else 'Tu contraseña' }}" required>
+      <button class="button button-primary button-full" type="submit">{{ "Crear mi cuenta" if mode == "register" else "Iniciar sesión" }} <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="auth-switch">
+      {{ "¿Ya tienes una cuenta?" if mode == "register" else "¿Todavía no tienes cuenta?" }}
+      <a href="{{ url_for('login' if mode == 'register' else 'register') }}">{{ "Inicia sesión" if mode == "register" else "Regístrate" }}</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

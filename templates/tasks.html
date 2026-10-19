@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Mis tareas{% endblock %}
+{% block content %}
+<section class="task-page">
+  <div class="page-intro">
+    <div class="eyebrow"><span class="eyebrow-line"></span> TU TABLERO PERSONAL</div>
+    <h1>Un poco de orden.<br><span>Mucho por hacer.</span></h1>
+    <p>Empieza por lo que importa. Lo demás puede esperar.</p>
+  </div>
+
+  <section class="composer">
+    <div class="composer-top"><span class="composer-icon">＋</span><div><h2>Una cosa menos en tu cabeza</h2><p>Anota tu próxima tarea y sigue con tu día.</p></div></div>
+    <form method="post" action="{{ url_for('tasks') }}" class="task-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label class="visually-hidden" for="new-title">Título de la tarea</label>
+      <input id="new-title" name="title" type="text" maxlength="120" placeholder="¿Qué quieres lograr?" required>
+      <label class="visually-hidden" for="new-description">Descripción opcional</label>
+      <input id="new-description" name="description" type="text" maxlength="1000" placeholder="Añade un detalle (opcional)">
+      <button class="button button-primary" type="submit">Añadir tarea <span aria-hidden="true">↗</span></button>
+    </form>
+  </section>
+
+  <section class="list-section">
+    <div class="list-heading"><h2>Tu lista <span class="count">{{ tasks|length }}</span></h2><span class="list-note">A tu propio ritmo</span></div>
+    {% if tasks %}
+      <div class="task-list">
+        {% for task in tasks %}
+          <article class="task-item {{ 'is-complete' if task.completed else '' }}">
+            <form method="post" action="{{ url_for('toggle_task', task_id=task.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="check-button" type="submit" aria-label="{{ 'Marcar como pendiente' if task.completed else 'Completar tarea' }}">{{ '✓' if task.completed else '' }}</button>
+            </form>
+            <div class="task-copy"><h3>{{ task.title }}</h3>{% if task.description %}<p>{{ task.description }}</p>{% endif %}</div>
+            <div class="task-actions">
+              <a class="icon-button" href="{{ url_for('edit_task', task_id=task.id) }}" aria-label="Editar {{ task.title }}" title="Editar">✎</a>
+              <form method="post" action="{{ url_for('delete_task', task_id=task.id) }}" onsubmit="return confirm('¿Eliminar esta tarea?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="icon-button delete-button" type="submit" aria-label="Eliminar {{ task.title }}" title="Eliminar">×</button>
+              </form>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state"><span class="empty-icon">✳</span><h3>Todo empieza con una idea.</h3><p>Añade una tarea arriba y dale forma a tu día.</p></div>
+    {% endif %}
+  </section>
+</section>
+{% endblock %}
